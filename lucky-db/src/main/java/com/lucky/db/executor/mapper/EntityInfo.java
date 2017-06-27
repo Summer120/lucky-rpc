@@ -2,6 +2,10 @@ package com.lucky.db.executor.mapper;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
 import com.lucky.db.annotation.LuckyTable;
+import com.lucky.db.convert.TypeHandler;
+import com.lucky.db.convert.TypeHandlerRegistry;
+import com.lucky.db.convert.UnknownTypeHandler;
+import lombok.Getter;
 import lucky.util.lang.FieldsUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,10 +24,12 @@ import java.util.*;
  */
 public class EntityInfo {
 
+    @Getter
     private MethodAccess method;
+    @Getter
     String tableName;
     //缓存字段信息,有效的字段，有get和set方法
-    public static Map<String, FieldInfo> fields = new HashMap<>();
+    public Map<String, FieldInfo> fields = new HashMap<>();
     // 删除,更新条件字段(带 Id 注解的)
     String[] idColumns;
     // 插入字段(不带 GeneratedValue 注解的)
@@ -96,6 +102,12 @@ public class EntityInfo {
             return null;
         }
 
+//        TypeHandler<?> typeHandler = TypeHandlerRegistry.TYPE_HANDLER_MAP.get(f.getType());
+//        //如果未找到的话，就不转了
+//        if (typeHandler == null) {
+//            typeHandler = new UnknownTypeHandler();
+//        }
+
         return new FieldInfo(getIndex, setIndex, f.getType());
     }
 
@@ -123,6 +135,27 @@ public class EntityInfo {
         return columnAn.name();
     }
 
+
+    //获取各个字段的信息
+    public Object[] getInsertValues(Object obj) {
+        Object[] result = new Object[this.getInsertColumns().length];
+        //循环遍历字段集合
+        for (int i = 0; i < this.getInsertColumns().length; i++) {
+            //反射调用gett方法
+            result[i] = getValue(obj, this.getInsertColumns()[i]);
+        }
+        return result;
+    }
+
+
+    public Object getValue(Object obj, String field) {
+        FieldInfo fieldInfo = this.fields.get(field);
+        if (fieldInfo == null) return null;
+
+        //在拼接的时候做转换
+        return method.invoke(obj, fieldInfo.getGetIndex());
+
+    }
 
     //需要过滤掉带generated自动生成的标识
     public String[] getInsertColumns() {

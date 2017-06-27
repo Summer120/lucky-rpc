@@ -15,5 +15,5 @@ public interface SQLContext {
 
     <T> T result();
 
-
+    <T> T result(Boolean returnKeys);
 }

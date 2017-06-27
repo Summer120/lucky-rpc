@@ -60,6 +60,7 @@ public class DeleteProvider implements DeleteContext {
     //具体得实现操作，后期在做
     @Override
     public BasicResult result() {
+
         return null;
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 public class Mapper {
 
 
-    //用来缓存实体信息
+    //用来缓存实体信息，也就是类似于object的操作信息
     private static Map<String, EntityInfo> entityCache = new HashMap<>();
 
     public static EntityInfo getEntityInfo(Class<?> clazz) {

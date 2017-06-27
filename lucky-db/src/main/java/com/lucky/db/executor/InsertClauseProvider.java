@@ -33,12 +33,14 @@ public class InsertClauseProvider implements InsertClause {
 
     @Override
     public BuildResult print() {
+
         return null;
     }
 
 
     @Override
     public BasicResult result() {
+
         return null;
     }
 }

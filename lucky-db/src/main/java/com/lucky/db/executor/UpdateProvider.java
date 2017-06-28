@@ -78,6 +78,11 @@ public class UpdateProvider implements UpdateContext {
     }
 
     @Override
+    public <T> T result(Boolean returnKeys) {
+        return null;
+    }
+
+    @Override
     public BasicResult result() {
         return null;
     }

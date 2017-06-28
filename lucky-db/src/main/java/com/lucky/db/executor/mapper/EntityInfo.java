@@ -2,9 +2,6 @@ package com.lucky.db.executor.mapper;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
 import com.lucky.db.annotation.LuckyTable;
-import com.lucky.db.convert.TypeHandler;
-import com.lucky.db.convert.TypeHandlerRegistry;
-import com.lucky.db.convert.UnknownTypeHandler;
 import lombok.Getter;
 import lucky.util.lang.FieldsUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -165,6 +162,7 @@ public class EntityInfo {
             Iterator<Map.Entry<String, FieldInfo>> iter = fields.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry<String, FieldInfo> fi = iter.next();
+                //排除是自动生成的标签
                 if (!fi.getValue().auto) {
                     columns.add(fi.getKey());
                 }

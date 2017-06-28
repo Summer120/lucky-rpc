@@ -18,7 +18,7 @@ public interface Executor {
     //insert(table).columns().values().result()
     InsertContext insert(String table);
 
-    <T> InsertClause insert(List<T> objects);
+    InsertClause insert(List<Object> objects);
 
 
     //删除语句操作,delete table where......

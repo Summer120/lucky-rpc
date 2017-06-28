@@ -1,5 +1,6 @@
 package com.lucky.db.executor;
 
+import com.lucky.db.debug.DebugLogger;
 import com.lucky.db.exception.DataSourceException;
 import com.lucky.db.executor.context.InsertClause;
 import com.lucky.db.executor.mapper.EntityInfo;
@@ -19,7 +20,7 @@ import java.util.Objects;
 
 /**
  * @Author:chaoqiang.zhou
- * @Description:插入语句操作
+ * @Description:插入语句操作，dataSource可以后期抽离出来，提升一下，有一个专门管理jdbc容器的manager
  * @Date:Create in 13:40 2017/6/26
  */
 public class InsertClauseProvider implements InsertClause {
@@ -41,6 +42,8 @@ public class InsertClauseProvider implements InsertClause {
     public BuildResult print() {
         //非null的校验
         Objects.requireNonNull(objects);
+        //获取entity实体
+        //entity包含了每个table的的信息：插入字段、更新字段、删除字段信息，懒加载
         EntityInfo entityInfo = Mapper.getEntityInfo(objects.get(0).getClass());
         return new DbBuilder().insertBuilder(entityInfo, objects);
     }
@@ -50,9 +53,11 @@ public class InsertClauseProvider implements InsertClause {
         PreparedStatement statement = null;
         Connection connection = null;
         ResultSet rs = null;
+        BuildResult buildResult = null;
+
         try {
             connection = dataSource.getConnection();
-            BuildResult buildResult = print();
+            buildResult = print();
             int option = returnKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
             statement = connection.prepareStatement(buildResult.getSql(), option);
             List<Object> args = buildResult.getArgs();
@@ -70,8 +75,11 @@ public class InsertClauseProvider implements InsertClause {
 
             return new InsertResult(rows, keys);
         } catch (Exception e) {
+            //打印debug的日志信息
+            DebugLogger.debugLogger(buildResult, e);
             //对外统一异常
             throw new DataSourceException(e);
+
         } finally {
             DbUtil.release(rs);
             DbUtil.release(statement);

@@ -32,8 +32,8 @@ public class DataBase implements Executor {
     }
 
     @Override
-    public <T> InsertClause insert(List<T> objects) {
-        return new InsertClauseProvider(dataSource, objects);
+    public InsertClause insert(List<Object> objs) {
+        return new InsertClauseProvider(dataSource, objs);
     }
 
 

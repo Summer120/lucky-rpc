@@ -56,6 +56,11 @@ public class InsertProvider implements InsertContext {
         return new BuildResult(this.args, sqlBuilder.toString());
     }
 
+    @Override
+    public <T> T result(Boolean returnKeys) {
+        return null;
+    }
+
 
     //具体插入的逻辑操作
     @Override

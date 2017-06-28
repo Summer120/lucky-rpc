@@ -8,6 +8,7 @@ import java.util.List;
  * @Date:Create in 20:23 2017/6/27
  */
 public class InsertResult extends BasicResult{
+    //插入后获取自增的主键操作
     private List<Object> keys;
 
     public InsertResult(int affectedRows, List<Object> keys) {

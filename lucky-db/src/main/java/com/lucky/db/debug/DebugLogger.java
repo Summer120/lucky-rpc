@@ -21,7 +21,22 @@ public class DebugLogger {
 
     public static List<String> argss = new ArrayList<>();
 
+    /***
+     * print sql语句
+     * @param result
+     */
     public static void debugLogger(BuildResult result) {
         logger.debug("debug sql {},args{}", result.getSql(), result.getArgs());
+    }
+
+
+    /**
+     * print execute exception
+     *
+     * @param result
+     * @param e
+     */
+    public static void debugLogger(BuildResult result, Exception e) {
+        logger.debug("debug sql {},args{},the error{}", result.getSql(), result.getArgs(), e);
     }
 }

@@ -39,5 +39,10 @@ public class DeleteClauseProvider implements DeleteClause {
         return null;
     }
 
+    @Override
+    public <T> T result(Boolean returnKeys) {
+        return null;
+    }
+
 
 }

@@ -156,6 +156,11 @@ public class SelectProvider implements SelectContext {
     }
 
     @Override
+    public <T> T result(Boolean returnKeys) {
+        return null;
+    }
+
+    @Override
     public <T> T result(LockMode lockMode) {
         return null;
     }

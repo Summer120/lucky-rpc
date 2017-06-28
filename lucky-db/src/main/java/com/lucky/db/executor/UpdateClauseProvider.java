@@ -45,6 +45,11 @@ public class UpdateClauseProvider implements UpdateClause {
     }
 
     @Override
+    public <T> T result(Boolean returnKeys) {
+        return null;
+    }
+
+    @Override
     public UpdateResult result() {
         return null;
     }

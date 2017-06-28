@@ -20,7 +20,7 @@ public class DbUtil {
             try {
                 rs.close();
             } catch (Exception e) {
-                logger.error("close rs failed", e);
+                logger.error("close rs failed,error{}", e);
             }
         }
     }
@@ -30,17 +30,17 @@ public class DbUtil {
             try {
                 statement.close();
             } catch (Exception e) {
-                logger.error("close statement failed", e);
+                logger.error("close statement failed,error{}", e);
             }
         }
     }
 
-    public static void release(Connection conn){
+    public static void release(Connection conn) {
         if (conn != null) {
             try {
                 conn.close();
             } catch (Exception e) {
-                logger.error("close statement failed", e);
+                logger.error("close connection failed,error{}", e);
             }
         }
     }
@@ -50,7 +50,7 @@ public class DbUtil {
             //巧妙的利用TypeHandler来设置参数
             TypeHandler typeHandler = TypeHandlerRegistry.TYPE_HANDLER_MAP.get(args[i].getClass());
             if (typeHandler == null) {
-                throw new SQLException("SqlRunner could not find a TypeHandler instance for " + args[i].getClass());
+                throw new SQLException("LuckyDb could not find a TypeHandler instance for " + args[i].getClass());
             } else {
                 typeHandler.setParameter(ps, i + 1, args[i], null);
             }

@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author:chaoqiang.zhou
@@ -38,6 +39,8 @@ public class InsertClauseProvider implements InsertClause {
 
     @Override
     public BuildResult print() {
+        //非null的校验
+        Objects.requireNonNull(objects);
         EntityInfo entityInfo = Mapper.getEntityInfo(objects.get(0).getClass());
         return new DbBuilder().insertBuilder(entityInfo, objects);
     }
@@ -53,10 +56,8 @@ public class InsertClauseProvider implements InsertClause {
             int option = returnKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
             statement = connection.prepareStatement(buildResult.getSql(), option);
             List<Object> args = buildResult.getArgs();
-            if (args != null) {
-                //在这里做javatype---》to---》jdbctype类型转换操作
-                DbUtil.setParameters(statement, args);
-            }
+            //在这里做javatype---》to---》jdbctype类型转换操作
+            DbUtil.setParameters(statement, args);
             int rows = statement.executeUpdate();
             List<Object> keys = null;
             if (rows > 0 && returnKeys) {
@@ -69,6 +70,7 @@ public class InsertClauseProvider implements InsertClause {
 
             return new InsertResult(rows, keys);
         } catch (Exception e) {
+            //对外统一异常
             throw new DataSourceException(e);
         } finally {
             DbUtil.release(rs);

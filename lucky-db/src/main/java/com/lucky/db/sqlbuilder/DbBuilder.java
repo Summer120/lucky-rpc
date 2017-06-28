@@ -26,18 +26,14 @@ public class DbBuilder implements Builder {
         }
         //去除最后一个逗号
         sb.deleteCharAt(sb.length() - 1);
+        sb.append(" values ");
         //单个obj insert into tablename('field','field') values()
         //多个实体 insert into tableName('field','field') value(),value()
-        if (objects.size() > 1) {
-            objects.forEach(data -> {
-                sb.append("value(").append(buildArgs(entityInfo.getInsertColumns().length)).append("),");
-                fieldObj.addAll(Arrays.asList(entityInfo.getInsertValues(data)));
-            });
-        } else {
-            //单个实体插入操作
-            sb.append("values(").append(buildArgs(entityInfo.getInsertColumns().length)).append("),");
-            fieldObj.addAll(Arrays.asList(entityInfo.getInsertValues(objects.get(0))));
-        }
+
+        objects.forEach(data -> {
+            sb.append("(").append(buildArgs(entityInfo.getInsertColumns().length)).append("),");
+            fieldObj.addAll(Arrays.asList(entityInfo.getInsertValues(data)));
+        });
         sb.deleteCharAt(sb.length() - 1);
         return new BuildResult(fieldObj, sb.toString());
     }

@@ -55,16 +55,11 @@ public class DeleteProvider implements DeleteContext {
         return new BuildResult(args, this.sqlBuilder.toString());
     }
 
-    @Override
-    public <T> T result(Boolean returnKeys) {
-        return null;
-    }
-
 
     //具体得实现操作，后期在做
     @Override
     public BasicResult result() {
-
-        return null;
+        BuildResult buildResult = print();
+        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
     }
 }

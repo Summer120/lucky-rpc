@@ -47,6 +47,12 @@ public class InsertProvider implements InsertContext {
         return this;
     }
 
+    @Override
+    public InsertResult result(boolean returnKeys) {
+        BuildResult buildResult = print();
+        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs(), returnKeys);
+    }
+
 
     //增加一个入口，可以获取到执行的sql信息
     @Override
@@ -54,12 +60,6 @@ public class InsertProvider implements InsertContext {
         //add table name
         this.sqlBuilder.INSERT_INTO(tableName);
         return new BuildResult(this.args, sqlBuilder.toString());
-    }
-
-    @Override
-    public InsertResult result(Boolean returnKeys) {
-        BuildResult buildResult = print();
-        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs(), returnKeys);
     }
 
 

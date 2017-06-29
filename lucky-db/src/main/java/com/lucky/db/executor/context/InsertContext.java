@@ -12,5 +12,5 @@ public interface InsertContext extends SQLContext {
 
     InsertContext values(Object... values);
 
-
+    <T> T result(boolean returnKeys);
 }

@@ -1,7 +1,5 @@
 package com.lucky.db.executor;
 
-import com.lucky.db.debug.DebugLogger;
-import com.lucky.db.exception.DataSourceException;
 import com.lucky.db.executor.context.InsertClause;
 import com.lucky.db.executor.mapper.EntityInfo;
 import com.lucky.db.executor.mapper.Mapper;
@@ -10,10 +8,6 @@ import com.lucky.db.executor.result.InsertResult;
 import com.lucky.db.sqlbuilder.DbBuilder;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,41 +44,8 @@ public class InsertClauseProvider implements InsertClause {
 
     @Override
     public InsertResult result(Boolean returnKeys) {
-        PreparedStatement statement = null;
-        Connection connection = null;
-        ResultSet rs = null;
-        BuildResult buildResult = null;
-
-        try {
-            connection = dataSource.getConnection();
-            buildResult = print();
-            int option = returnKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
-            statement = connection.prepareStatement(buildResult.getSql(), option);
-            List<Object> args = buildResult.getArgs();
-            //在这里做javatype---》to---》jdbctype类型转换操作
-            DbUtil.setParameters(statement, args);
-            int rows = statement.executeUpdate();
-            List<Object> keys = null;
-            if (rows > 0 && returnKeys) {
-                keys = new ArrayList<>(rows);
-                rs = statement.getGeneratedKeys();
-                while (rs.next()) {
-                    keys.add(rs.getObject(1));
-                }
-            }
-
-            return new InsertResult(rows, keys);
-        } catch (Exception e) {
-            //打印debug的日志信息
-            DebugLogger.debugLogger(buildResult, e);
-            //对外统一异常
-            throw new DataSourceException(e);
-
-        } finally {
-            DbUtil.release(rs);
-            DbUtil.release(statement);
-            DbUtil.release(connection);
-        }
+        BuildResult buildResult = print();
+        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs(), returnKeys);
     }
 
 

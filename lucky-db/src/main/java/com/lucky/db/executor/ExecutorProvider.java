@@ -18,4 +18,9 @@ public class ExecutorProvider implements ExecuteClause {
     public <T> T result() {
         return null;
     }
+
+    @Override
+    public <T> T result(Boolean returnKeys) {
+        return null;
+    }
 }

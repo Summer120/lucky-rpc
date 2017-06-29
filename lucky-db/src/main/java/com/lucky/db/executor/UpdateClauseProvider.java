@@ -1,13 +1,17 @@
 package com.lucky.db.executor;
 
 import com.lucky.db.executor.context.UpdateClause;
+import com.lucky.db.executor.mapper.EntityInfo;
+import com.lucky.db.executor.mapper.Mapper;
+import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.BuildResult;
-import com.mongodb.client.result.UpdateResult;
+import com.lucky.db.sqlbuilder.DbBuilder;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author:chaoqiang.zhou
@@ -41,16 +45,22 @@ public class UpdateClauseProvider implements UpdateClause {
 
     @Override
     public BuildResult print() {
-        return null;
+        Objects.requireNonNull(object);
+        EntityInfo entityInfo = Mapper.getEntityInfo(object.getClass());
+        if (updateColumns.size() <= 0) {
+            //为空的话，就是用的实体里面所有的字段信息
+            return new DbBuilder().updateBuilder(entityInfo, object, Arrays.asList(entityInfo.getUpdateColumns()));
+        }
+
+        //否则就是用的是更新后的信息
+        return new DbBuilder().updateBuilder(entityInfo, object, updateColumns);
     }
 
-    @Override
-    public <T> T result(Boolean returnKeys) {
-        return null;
-    }
 
     @Override
-    public UpdateResult result() {
-        return null;
+    public BasicResult result() {
+        BuildResult buildResult = print();
+        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
+
     }
 }

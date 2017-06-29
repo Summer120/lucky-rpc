@@ -30,6 +30,10 @@ public class DebugLogger {
     }
 
 
+    public static void debugLogger(String sql, List<Object> args, Exception e) {
+        logger.debug("execute sql{},args{},error{}", sql, args, e);
+    }
+
     /**
      * print execute exception
      *

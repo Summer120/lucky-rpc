@@ -1,8 +1,8 @@
 package com.lucky.db.executor;
 
 import com.lucky.db.executor.context.InsertContext;
-import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.BuildResult;
+import com.lucky.db.executor.result.InsertResult;
 import com.lucky.db.sqlbuilder.SQL;
 import lombok.Setter;
 
@@ -57,14 +57,15 @@ public class InsertProvider implements InsertContext {
     }
 
     @Override
-    public <T> T result(Boolean returnKeys) {
-        return null;
+    public InsertResult result(Boolean returnKeys) {
+        BuildResult buildResult = print();
+        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs(), returnKeys);
     }
 
 
     //具体插入的逻辑操作
     @Override
-    public BasicResult result() {
-        return null;
+    public InsertResult result() {
+        return this.result(false);
     }
 }

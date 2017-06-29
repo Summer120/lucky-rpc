@@ -26,7 +26,6 @@ public interface Executor {
 
     DeleteClause delete(Object obj);
 
-    DeleteClause delete(List<Object> objs);
 
 
     UpdateContext update(String table);

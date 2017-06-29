@@ -2,10 +2,17 @@ package com.lucky.db.executor;
 
 import com.lucky.db.convert.TypeHandler;
 import com.lucky.db.convert.TypeHandlerRegistry;
+import com.lucky.db.debug.DebugLogger;
+import com.lucky.db.exception.DataSourceException;
+import com.lucky.db.executor.result.BasicResult;
+import com.lucky.db.executor.result.InsertResult;
 import lucky.util.log.Logger;
 import lucky.util.log.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author:chaoqiang.zhou
@@ -15,6 +22,65 @@ import java.sql.*;
 public class DbUtil {
     private static Logger logger = LoggerFactory.getLogger(DbUtil.class);
 
+
+    //执行insert、update、delete的sql语句
+    public static InsertResult executeUpdate(DataSource dataSource, String sql, List<Object> args, boolean returnKeys) {
+        PreparedStatement statement = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            connection = dataSource.getConnection();
+            int option = returnKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
+            statement = connection.prepareStatement(sql, option);
+            //在这里做javatype---》to---》jdbctype类型转换操作
+            setParameters(statement, args);
+            int rows = statement.executeUpdate();
+            List<Object> keys = null;
+            if (rows > 0 && returnKeys) {
+                keys = new ArrayList<>(rows);
+                rs = statement.getGeneratedKeys();
+                while (rs.next()) {
+                    keys.add(rs.getObject(1));
+                }
+            }
+            return new InsertResult(rows, keys);
+        } catch (Exception e) {
+            DebugLogger.debugLogger(sql, args, e);
+            //打印debug的日志信息//对外统一异常
+            throw new DataSourceException(e);
+        } finally {
+            DbUtil.release(rs);
+            DbUtil.release(statement);
+            DbUtil.release(connection);
+        }
+
+    }
+
+
+    //执行update、delete的sql语句
+    public static BasicResult executeUpdate(DataSource dataSource, String sql, List<Object> args) {
+        PreparedStatement statement = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(sql);
+            //在这里做javatype---》to---》jdbctype类型转换操作
+            setParameters(statement, args);
+            int rows = statement.executeUpdate();
+            return new BasicResult(rows);
+        } catch (Exception e) {
+            DebugLogger.debugLogger(sql, args, e);
+            //打印debug的日志信息//对外统一异常
+            throw new DataSourceException(e);
+        } finally {
+            DbUtil.release(rs);
+            DbUtil.release(statement);
+            DbUtil.release(connection);
+        }
+
+    }
+
     public static void release(ResultSet rs) {
         if (rs != null) {
             try {
@@ -23,6 +89,7 @@ public class DbUtil {
                 logger.error("close rs failed,error{}", e);
             }
         }
+
     }
 
     public static void release(Statement statement) {

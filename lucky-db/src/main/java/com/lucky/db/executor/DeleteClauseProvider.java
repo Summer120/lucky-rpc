@@ -1,10 +1,14 @@
 package com.lucky.db.executor;
 
 import com.lucky.db.executor.context.DeleteClause;
+import com.lucky.db.executor.mapper.EntityInfo;
+import com.lucky.db.executor.mapper.Mapper;
+import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.BuildResult;
+import com.lucky.db.sqlbuilder.DbBuilder;
 
 import javax.sql.DataSource;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author:chaoqiang.zhou
@@ -15,33 +19,26 @@ public class DeleteClauseProvider implements DeleteClause {
 
 
     private DataSource dataSource;
-
-    private List<Object> objects;
-
-    public DeleteClauseProvider(DataSource dataSource, List<Object> objects) {
-        this.dataSource = dataSource;
-        this.objects = objects;
-    }
+    private Object obj;
 
     public DeleteClauseProvider(DataSource dataSource, Object obj) {
         this.dataSource = dataSource;
-        this.objects.add(obj);
+        this.obj = obj;
     }
 
     @Override
     public BuildResult print() {
-
-        return null;
+        //参数校验
+        Objects.requireNonNull(obj);
+        //获取mapper实体操作
+        EntityInfo entityInfo = Mapper.getEntityInfo(obj.getClass());
+        return new DbBuilder().deleteBuilder(entityInfo, obj);
     }
 
     @Override
-    public <T> T result() {
-        return null;
-    }
-
-    @Override
-    public <T> T result(Boolean returnKeys) {
-        return null;
+    public BasicResult result() {
+        BuildResult buildResult = print();
+        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
     }
 
 

@@ -15,11 +15,5 @@ public interface SQLContext {
 
     <T> T result();
 
-    /**
-     * 获取插入后，自增的主键操作
-     * @param returnKeys
-     * @param <T>
-     * @return
-     */
-    <T> T result(Boolean returnKeys);
+
 }

@@ -13,4 +13,9 @@ import java.util.List;
 public interface Builder {
 
     BuildResult insertBuilder(EntityInfo entityInfo, List<Object> objects);
+
+
+    BuildResult updateBuilder(EntityInfo entityInfo, Object object, List<String> updateColumns);
+
+    BuildResult deleteBuilder(EntityInfo entityInfo, Object obj);
 }

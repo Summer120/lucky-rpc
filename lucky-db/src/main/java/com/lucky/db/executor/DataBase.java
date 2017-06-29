@@ -1,7 +1,6 @@
 package com.lucky.db.executor;
 
 import com.lucky.db.executor.context.*;
-import com.lucky.db.executor.result.SelectClauseProvider;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -49,11 +48,6 @@ public class DataBase implements Executor {
         return new DeleteClauseProvider(this.dataSource, obj);
     }
 
-    @Override
-    public DeleteClauseProvider delete(List<Object> objs) {
-
-        return new DeleteClauseProvider(this.dataSource, objs);
-    }
 
 
     //更新语句操作

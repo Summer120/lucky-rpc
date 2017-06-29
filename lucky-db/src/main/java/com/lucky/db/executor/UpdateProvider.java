@@ -74,16 +74,14 @@ public class UpdateProvider implements UpdateContext {
 
     @Override
     public BuildResult print() {
+
+        this.sqlBuilder.UPDATE(tableName);
         return new BuildResult(args, this.sqlBuilder.toString());
     }
 
     @Override
-    public <T> T result(Boolean returnKeys) {
-        return null;
-    }
-
-    @Override
     public BasicResult result() {
-        return null;
+        BuildResult buildResult = print();
+        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
     }
 }

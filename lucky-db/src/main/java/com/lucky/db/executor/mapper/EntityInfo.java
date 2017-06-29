@@ -145,6 +145,44 @@ public class EntityInfo {
     }
 
 
+    /**
+     * 获取全部需要更新得字段信息
+     *
+     * @param obj
+     * @return
+     */
+    public Object[] getUpdateValues(Object obj) {
+        Object[] result = new Object[this.getUpdateColumns().length];
+        //循环遍历字段信息
+        //循环遍历字段集合
+        for (int i = 0; i < this.getUpdateColumns().length; i++) {
+            //反射调用gett方法
+            result[i] = getValue(obj, this.getUpdateColumns()[i]);
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 获取特定的更新字段的值信息
+     *
+     * @param obj
+     * @param columns
+     * @return
+     */
+    public Object[] getUpdateValues(Object obj, List<String> columns) {
+        Object[] result = new Object[columns.size()];
+        //循环遍历字段信息
+        //循环遍历字段集合
+        for (int i = 0; i < columns.size(); i++) {
+            //反射调用gett方法
+            result[i] = getValue(obj, columns.get(i));
+        }
+
+        return result;
+    }
+
     public Object getValue(Object obj, String field) {
         FieldInfo fieldInfo = this.fields.get(field);
         if (fieldInfo == null) return null;

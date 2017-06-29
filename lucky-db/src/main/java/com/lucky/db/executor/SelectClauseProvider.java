@@ -1,6 +1,7 @@
-package com.lucky.db.executor.result;
+package com.lucky.db.executor;
 
 import com.lucky.db.executor.context.SelectClause;
+import com.lucky.db.executor.result.BuildResult;
 
 import javax.sql.DataSource;
 
@@ -31,6 +32,11 @@ public class SelectClauseProvider implements SelectClause {
 
     @Override
     public <T> T result() {
+        return null;
+    }
+
+    @Override
+    public <T> T result(Boolean returnKeys) {
         return null;
     }
 }

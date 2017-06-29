@@ -18,4 +18,7 @@ public interface Builder {
     BuildResult updateBuilder(EntityInfo entityInfo, Object object, List<String> updateColumns);
 
     BuildResult deleteBuilder(EntityInfo entityInfo, Object obj);
+
+
+    BuildResult selectBuilder(EntityInfo entityInfo, SQL whereSql, List<Object> args);
 }

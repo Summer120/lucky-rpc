@@ -2,6 +2,7 @@ package com.lucky.db.executor;
 
 import com.lucky.db.executor.context.SelectContext;
 import com.lucky.db.executor.result.BuildResult;
+import com.lucky.db.executor.result.SelectResult;
 import com.lucky.db.sqlbuilder.SQL;
 
 import javax.sql.DataSource;
@@ -150,18 +151,27 @@ public class SelectProvider implements SelectContext {
         return new BuildResult(args, this.sqlBuilder.toString());
     }
 
-    @Override
-    public <T> T result() {
-        return null;
-    }
 
     @Override
-    public <T> T result(Boolean returnKeys) {
-        return null;
+    public SelectResult result() {
+        //不需要加锁配置
+        return this.result(LockMode.NONE);
     }
 
+
+    /***
+     * for update的模式操作
+     * @param lockMode
+     * @return
+     */
     @Override
-    public <T> T result(LockMode lockMode) {
-        return null;
+    public SelectResult result(LockMode lockMode) {
+        BuildResult buildResult = print();
+        if (lockMode == LockMode.SHARED) {
+            buildResult.setSql(buildResult.getSql() + " lock in share mode");
+        } else if (lockMode == LockMode.EXCLUSIVE) {
+            buildResult.setSql(buildResult.getSql() + " for update");
+        }
+        return DbUtil.executeQuery(dataSource, buildResult.getSql(), buildResult.getArgs());
     }
 }

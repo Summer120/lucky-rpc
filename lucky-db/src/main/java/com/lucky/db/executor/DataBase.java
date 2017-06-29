@@ -69,7 +69,7 @@ public class DataBase implements Executor {
     }
 
 
-    //查询语句操作
+    //查询语句操作,这块封装的不是太好，有点太死了
     @Override
     public SelectContext select(String column) {
         return new SelectProvider(column, this.dataSource);
@@ -81,7 +81,7 @@ public class DataBase implements Executor {
     }
 
 
-    //这两个如何区别
+    //内部还可以调用SelectContext，就是为了字段名信息
     @Override
     public SelectClause select(Class<?> clazz) {
         return new SelectClauseProvider(clazz, dataSource);

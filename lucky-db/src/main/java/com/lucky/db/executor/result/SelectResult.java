@@ -1,5 +1,6 @@
 package com.lucky.db.executor.result;
 
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,13 @@ import java.util.Map;
  */
 public class SelectResult implements AutoCloseable {
 
+
+    //通过resultset来操作下面的信息
+    private ResultSet resultset;
+
+    public SelectResult(ResultSet set) {
+        this.resultset = set;
+    }
 
     //返回某个类操作
     public <T> T one(Class<T> clazz) {

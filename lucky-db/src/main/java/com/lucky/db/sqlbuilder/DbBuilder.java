@@ -16,10 +16,12 @@ import java.util.Objects;
 public class DbBuilder implements Builder {
 
 
+    public static final ThreadLocal<StringBuffer> bufferCache = new ThreadLocal<>();
+
     @Override
     public BuildResult insertBuilder(EntityInfo entityInfo, List<Object> objects) {
         List<Object> fieldObj = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = bufferCache.get();
         sb.append("INSERT INTO").append(entityInfo.getTableName())
                 .append("(");
         for (String columns : entityInfo.getInsertColumns()) {
@@ -50,7 +52,7 @@ public class DbBuilder implements Builder {
     @Override
     public BuildResult updateBuilder(EntityInfo entityInfo, Object object, List<String> updateColumns) {
         Objects.requireNonNull(entityInfo.getIdColumns());
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = bufferCache.get();
         List<Object> args = new ArrayList<>();
         //update tablename set field=?,field=? where ID=?,AND IDS=?
         sb.append("UPDATE").append(entityInfo.getTableName()).append("SET");
@@ -81,7 +83,7 @@ public class DbBuilder implements Builder {
      */
     @Override
     public BuildResult deleteBuilder(EntityInfo entityInfo, Object obj) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = bufferCache.get();
         List<Object> args = new ArrayList<>();
         sb.append("DELETE FROM").append(entityInfo.getTableName()).append("WHERE");
         //带id的字段信息
@@ -90,6 +92,26 @@ public class DbBuilder implements Builder {
         }
         sb.deleteCharAt(sb.length() - 1);
         args.addAll(Arrays.asList(entityInfo.getUpdateValues(obj, Arrays.asList(entityInfo.getIdColumns()))));
+        return new BuildResult(args, sb.toString());
+    }
+
+
+    /**
+     * 拼接clazz的sql语句操作
+     *
+     * @param entityInfo：包含的字段信息
+     * @param whereSql：条件信息
+     * @param args：参数信息
+     * @return
+     */
+    @Override
+    public BuildResult selectBuilder(EntityInfo entityInfo, SQL whereSql, List<Object> args) {
+        StringBuffer sb = bufferCache.get();
+        //add select field information
+        for (String key : entityInfo.fields.keySet()) {
+            whereSql.SELECT(key);
+        }
+        whereSql.FROM(entityInfo.getTableName());
         return new BuildResult(args, sb.toString());
     }
 

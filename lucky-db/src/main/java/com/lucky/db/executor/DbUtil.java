@@ -6,6 +6,7 @@ import com.lucky.db.debug.DebugLogger;
 import com.lucky.db.exception.DataSourceException;
 import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.InsertResult;
+import com.lucky.db.executor.result.SelectResult;
 import lucky.util.log.Logger;
 import lucky.util.log.LoggerFactory;
 
@@ -79,6 +80,37 @@ public class DbUtil {
             DbUtil.release(connection);
         }
 
+    }
+
+
+    /**
+     * 执行查询的语句的信息
+     *
+     * @param dataSource
+     * @param sql
+     * @param args
+     * @return
+     */
+    public static SelectResult executeQuery(DataSource dataSource, String sql, List<Object> args) {
+        PreparedStatement statement = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(sql);
+            //在这里做javatype---》to---》jdbctype类型转换操作
+            setParameters(statement, args);
+            rs = statement.executeQuery();
+            return new SelectResult(rs);
+        } catch (Exception e) {
+            DebugLogger.debugLogger(sql, args, e);
+            //打印debug的日志信息//对外统一异常
+            throw new DataSourceException(e);
+        } finally {
+            DbUtil.release(rs);
+            DbUtil.release(statement);
+            DbUtil.release(connection);
+        }
     }
 
     public static void release(ResultSet rs) {

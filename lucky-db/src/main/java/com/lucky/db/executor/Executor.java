@@ -43,6 +43,9 @@ public interface Executor {
     SelectClause select(Class<?> clazz);
 
 
+    //事务操作的方法
+
+
     //原生sql查询操作
     ExecuteClause execute(String sql, Object... args);
 }

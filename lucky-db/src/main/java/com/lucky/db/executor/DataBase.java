@@ -3,6 +3,7 @@ package com.lucky.db.executor;
 import com.lucky.db.executor.context.*;
 
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.util.List;
 
 /**
@@ -13,6 +14,9 @@ import java.util.List;
 public class DataBase implements Executor {
 
 
+    public DataBase(){
+
+    }
     public DataSource dataSource;
 
     public DataBase(DataSource dataSource) {
@@ -86,6 +90,10 @@ public class DataBase implements Executor {
     public SelectClause select(Class<?> clazz) {
         return new SelectClauseProvider(clazz, dataSource);
     }
+
+
+    //事务操作的方法
+
 
 
     @Override

@@ -19,8 +19,11 @@ public class SelectResult implements AutoCloseable {
         this.resultset = set;
     }
 
+
+    //通过result来进行返回值即可
     //返回某个类操作
     public <T> T one(Class<T> clazz) {
+
 
         return null;
     }

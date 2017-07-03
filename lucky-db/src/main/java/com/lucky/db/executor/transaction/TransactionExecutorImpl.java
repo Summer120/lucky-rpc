@@ -1,5 +1,6 @@
 package com.lucky.db.executor.transaction;
 
+import com.lucky.db.executor.Context;
 import com.lucky.db.executor.DataBase;
 import com.lucky.db.executor.Executor;
 
@@ -29,12 +30,32 @@ public class TransactionExecutorImpl extends DataBase implements TransactionExec
 
     @Override
     public void begin(Consumer<Executor> action) {
-        this.transactionTemplate.execute(action);
+        this.transactionTemplate.execute(action, false);
     }
 
     @Override
     public <T> T begin(Function<Executor, T> func) {
-        return this.transactionTemplate.execute(func);
+        return this.transactionTemplate.execute(func, false);
+    }
+
+    @Override
+    public void begin(Consumer<Executor> action, boolean setContext) {
+        if (setContext) {
+            Executor executor = new DataBase(this.dataSource);
+            //设置上下文到线程里面
+            Context.CURRENT.set(executor);
+        }
+        this.transactionTemplate.execute(action, setContext);
+    }
+
+    @Override
+    public <T> T begin(Function<Executor, T> func, boolean setContext) {
+        if (setContext) {
+            Executor executor = new DataBase(this.dataSource);
+            //设置上下文到线程里面
+            Context.CURRENT.set(executor);
+        }
+        return this.transactionTemplate.execute(func, setContext);
     }
 
 

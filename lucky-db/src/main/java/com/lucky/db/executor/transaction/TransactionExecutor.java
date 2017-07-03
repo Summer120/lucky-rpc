@@ -37,4 +37,20 @@ public interface TransactionExecutor extends Executor {
     <T> T begin(Function<Executor, T> func);
 
 
+
+    /**
+     * 启动一个事务
+     *
+     * @param action 事务操作
+     * @return
+     */
+    void begin(Consumer<Executor> action,boolean setContext);
+
+    /**
+     * 启动一个事务
+     *
+     * @param func 事务操作
+     * @return 操作结果
+     */
+    <T> T begin(Function<Executor, T> func,boolean setContext);
 }

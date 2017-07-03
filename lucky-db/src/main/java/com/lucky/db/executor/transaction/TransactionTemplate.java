@@ -1,5 +1,6 @@
 package com.lucky.db.executor.transaction;
 
+import com.lucky.db.executor.Context;
 import com.lucky.db.executor.DataBase;
 import com.lucky.db.executor.Executor;
 import lucky.util.log.Logger;
@@ -41,12 +42,18 @@ public class TransactionTemplate extends DefaultTransactionDefinition implements
     }
 
 
-    public <T> T execute(Function<Executor, T> action) throws TransactionException {
+    public <T> T execute(Function<Executor, T> action, boolean setContext) throws TransactionException {
         TransactionStatus status = this.transactionManager.getTransaction(this);
         T result = null;
+        Executor executor = null;
         try {
 
-            Executor executor = new DataBase(this.dataSource);
+            if (setContext) {
+                executor = Context.CURRENT.get();
+            } else {
+                executor = new DataBase(this.dataSource);
+
+            }
             result = action.apply(executor);
         } catch (RuntimeException ex) {
             // Transactional code threw application exception -> rollback
@@ -63,10 +70,16 @@ public class TransactionTemplate extends DefaultTransactionDefinition implements
     }
 
 
-    public void execute(Consumer<Executor> action) throws TransactionException {
+    public void execute(Consumer<Executor> action, boolean setContext) throws TransactionException {
         TransactionStatus status = this.transactionManager.getTransaction(this);
+        Executor executor = null;
         try {
-            Executor executor = new DataBase(this.dataSource);
+            if (setContext) {
+                executor = Context.CURRENT.get();
+            } else {
+                executor = new DataBase(this.dataSource);
+
+            }
             action.accept(executor);
         } catch (RuntimeException ex) {
             // Transactional code threw application exception -> rollback

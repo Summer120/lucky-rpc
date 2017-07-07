@@ -42,4 +42,18 @@ public class ActiveProfileConfig {
         }
 
     }
+
+
+    public static String get(String key, String defaultValue) {
+        Object value = configs.get(key);
+        if (value != null) {
+            return (String) value;
+        }
+
+        return defaultValue;
+    }
+
+    public static String get(String key) {
+        return (String) configs.get(key);
+    }
 }

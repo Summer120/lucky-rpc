@@ -1,5 +1,7 @@
 package com.lucky.db.datasource;
 
+import com.lucky.db.config.DataSourceConfig;
+import com.lucky.db.config.DataSourceConfigFactory;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
@@ -14,18 +16,27 @@ import java.util.Objects;
 public class DataSourceFactory {
 
     //缓存需要的数据源信息，懒加载模式
-    private HashMap<String, DataSource> dataSourceContainer = new HashMap<>();
+    private static HashMap<String, DataSource> dataSourceContainer = new HashMap<>();
 
 
     //模式的数据源模式
     //todo:测试数据源配置信息
-    public static DataSource get(String name) {
+    public synchronized static DataSource get(String name) {
         Objects.requireNonNull(name);
+        DataSource db = dataSourceContainer.get(name);
+        if (db != null) {
+            return db;
+        }
+
+        DataSourceConfig dataSourceConfig = DataSourceConfigFactory.get(name);
+        Objects.requireNonNull(dataSourceConfig);
+
         BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://192.168.55.121:3306/cmc_approval");
-        ds.setUsername("mxuser");
-        ds.setPassword("mxuser123456");
+        DataSourceConfig.DataSourceParams dataSourceParams = dataSourceConfig.getDataSourceParams();
+        ds.setDriverClassName(dataSourceConfig.getDriver());
+        ds.setUrl(dataSourceParams.getUrl());
+        ds.setUsername(dataSourceParams.getUserName());
+        ds.setPassword(dataSourceParams.getPassword());
         return ds;
     }
 

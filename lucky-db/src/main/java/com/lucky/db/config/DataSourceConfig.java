@@ -23,8 +23,9 @@ public class DataSourceConfig {
         private String userName;
         private String password;
         private String url;
-        private int MaxIdleConns;
-        private int MaxOpenConns;
+        //增加默认值操作
+        private int MaxIdleConns = 1;
+        private int MaxOpenConns = 100;
     }
 
 

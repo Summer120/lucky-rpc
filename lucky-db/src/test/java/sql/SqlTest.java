@@ -18,11 +18,32 @@ public class SqlTest {
 
     public static void main(String[] args) {
 
-        updateObj();
+        selectList();
     }
 
 
-    //事务方法异常测试,有问题
+    public static void selectList() {
+        DataBase db = DataBaseFactory.open("");
+        List<UserTest> userTests = db.select("msg").FROM("user_test").result().all(UserTest.class);
+        System.out.println(userTests);
+    }
+
+
+    public static void selectTest() {
+        DataBase db = DataBaseFactory.open("");
+        UserTest userTest = db.select(UserTest.class).WHERE("msg_id", ConditionType.EQ, "2").result().one(UserTest.class);
+        System.out.println(userTest.getMsg());
+    }
+
+
+    public static void selectObj() {
+        DataBase db = DataBaseFactory.open("");
+        UserTest userTest = db.select("msg_id", "instance_id").FROM("user_test").WHERE("msg_id", ConditionType.EQ, "2").result().one(UserTest.class);
+        System.out.println(userTest);
+    }
+
+
+    //事务方法异常测试
     public static void transactionExText() {
         DataBase db = DataBaseFactory.open("");
         UserTest userTest = new UserTest();

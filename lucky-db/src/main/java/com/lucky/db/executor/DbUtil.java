@@ -97,7 +97,7 @@ public class DbUtil {
             connection = manager.getConnection();
             statement = connection.prepareStatement(sql);
             //在这里做javatype---》to---》jdbctype类型转换操作
-            setParameters(statement, args);
+            setParameters(statement, args.toArray());
             rs = statement.executeQuery();
             return new SelectResult(rs, statement, connection);
         } catch (Exception e) {

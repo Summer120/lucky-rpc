@@ -80,7 +80,7 @@ public class SelectClauseProvider implements SelectClause {
     @Override
     public SelectClauseProvider WHERE(String conditions, ConditionType type, Object value) {
 
-        this.sqlBuilder.WHERE(conditions + "" + type.name() + " ?");
+        this.sqlBuilder.WHERE(conditions + "" + type.value + " ?");
         this.args.add(value);
         return this;
     }

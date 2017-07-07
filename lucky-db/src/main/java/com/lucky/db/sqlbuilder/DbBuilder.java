@@ -104,13 +104,12 @@ public class DbBuilder implements Builder {
      */
     @Override
     public BuildResult selectBuilder(EntityInfo entityInfo, SQL whereSql, List<Object> args) {
-        StringBuffer sb = new StringBuffer();
         //add select field information
         for (String key : entityInfo.fields.keySet()) {
             whereSql.SELECT(key);
         }
         whereSql.FROM(entityInfo.getTableName());
-        return new BuildResult(args, sb.toString());
+        return new BuildResult(args, whereSql.toString());
     }
 
 

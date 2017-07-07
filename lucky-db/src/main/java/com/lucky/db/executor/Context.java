@@ -1,5 +1,7 @@
 package com.lucky.db.executor;
 
+import java.sql.Connection;
+
 /**
  * @Author:chaoqiang.zhou
  * @Description:共享的上下文的信息
@@ -9,7 +11,7 @@ public class Context {
 
     //共享的db信息，用于实现事务的上下文的信息
     public static final ThreadLocal<Executor> CURRENT = new ThreadLocal<>();
-
+    public static final ThreadLocal<Connection> CONNECTION=new ThreadLocal<>();
 
 }
 

@@ -45,7 +45,7 @@ public class EntityInfo {
 
         this.tableName = tableAnno.name();
         //分片的字段信息
-        this.shardKeys = clazz.getAnnotation(LuckyTable.class).shardKeys();
+        this.shardKeys = clazz.getAnnotation(LuckyTable.class) == null ? "" : clazz.getAnnotation(LuckyTable.class).shardKeys();
         initField(clazz);
     }
 
@@ -209,6 +209,23 @@ public class EntityInfo {
             this.insertColumns = columns.toArray(new String[0]);
         }
         return insertColumns;
+    }
+
+
+    /***
+     * 对实体进行赋值操作
+     * @param obj
+     * @param field
+     * @param value
+     */
+    public void setValue(Object obj, String field, Object value) {
+        if (value == null) {
+            return;
+        }
+
+        FieldInfo fi = fields.get(field);
+        if (fi == null) return;
+        method.invoke(obj, fi.getSetIndex(), value);
     }
 
 

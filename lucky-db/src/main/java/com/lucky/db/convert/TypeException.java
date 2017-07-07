@@ -15,11 +15,13 @@
  */
 package com.lucky.db.convert;
 
-import org.apache.ibatis.exceptions.PersistenceException;
+
 
 /**
  * @author Clinton Begin
  */
+
+import com.lucky.db.exception.PersistenceException;
 
 /**
  * 类型异常

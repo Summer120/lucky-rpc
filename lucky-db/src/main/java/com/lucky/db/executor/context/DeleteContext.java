@@ -1,6 +1,7 @@
 package com.lucky.db.executor.context;
 
 import com.lucky.db.executor.ConditionType;
+import com.lucky.db.executor.result.BasicResult;
 
 /**
  * @Author:chaoqiang.zhou
@@ -14,4 +15,5 @@ public interface DeleteContext  extends SQLContext{
     DeleteContext or();
 
     DeleteContext and();
+    BasicResult result();
 }

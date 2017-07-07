@@ -1,6 +1,7 @@
 package com.lucky.db.executor.context;
 
 import com.lucky.db.executor.ConditionType;
+import com.lucky.db.executor.result.BasicResult;
 
 /**
  * @Author:chaoqiang.zhou
@@ -18,5 +19,7 @@ public interface UpdateContext extends SQLContext{
     UpdateContext or();
 
     UpdateContext and();
+    BasicResult result();
+
 
 }

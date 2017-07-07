@@ -279,10 +279,10 @@ public abstract class AbstractSQL<T> {
         private String updateSQL(SafeAppendable builder) {
 
             sqlClause(builder, "UPDATE", tables, "", "", "");
-            sqlClause(builder, "SET", sets, "", "", ", ");
+            sqlClause(builder, " SET ", sets, "", "", ", ");
             sqlClause(builder, "", columns, "(", ")", ", ");
-            sqlClause(builder, "VALUES", values, "(", ")", ", ");
-            sqlClause(builder, "WHERE", where, "(", ")", " AND ");
+            sqlClause(builder, " VALUES", values, "(", ")", ", ");
+            sqlClause(builder, " WHERE ", where, "(", ")", " AND ");
             return builder.toString();
         }
 

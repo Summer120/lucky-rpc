@@ -15,9 +15,6 @@
  */
 package com.lucky.db.convert;
 
-import org.apache.ibatis.type.BaseTypeHandler;
-import org.apache.ibatis.type.JdbcType;
-
 import java.sql.*;
 import java.util.Date;
 

@@ -7,7 +7,6 @@ import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.BuildResult;
 import com.lucky.db.sqlbuilder.DbBuilder;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,24 +20,24 @@ import java.util.Objects;
 public class UpdateClauseProvider implements UpdateClause {
 
 
-    private DataSource dataSource;
+    private ConnectionManager connectionManager;
 
     //代表需要更新的字段信息
     private List<String> updateColumns = new ArrayList<>();
     private Object object;
 
-    public UpdateClauseProvider(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public UpdateClauseProvider(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
 
-    public UpdateClauseProvider(DataSource dataSource, Object obj) {
-        this.dataSource = dataSource;
+    public UpdateClauseProvider(ConnectionManager connectionManager, Object obj) {
+        this.connectionManager = connectionManager;
         this.object = obj;
     }
 
-    public UpdateClauseProvider(DataSource dataSource, Object obj, String... columns) {
-        this.dataSource = dataSource;
+    public UpdateClauseProvider(ConnectionManager connectionManager, Object obj, String... columns) {
+        this.connectionManager = connectionManager;
         this.updateColumns = Arrays.asList(columns);
         this.object = obj;
     }
@@ -60,7 +59,7 @@ public class UpdateClauseProvider implements UpdateClause {
     @Override
     public BasicResult result() {
         BuildResult buildResult = print();
-        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
+        return DbUtil.executeUpdate(this.connectionManager, buildResult.getSql(), buildResult.getArgs());
 
     }
 }

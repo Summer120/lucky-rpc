@@ -6,7 +6,6 @@ import com.lucky.db.executor.result.InsertResult;
 import com.lucky.db.sqlbuilder.SQL;
 import lombok.Setter;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +23,11 @@ public class InsertProvider implements InsertContext {
     private String tableName;
     private final SQL sqlBuilder = new SQL();
     private List<Object> args = new ArrayList<>();
+    private ConnectionManager manager;
 
-    private DataSource dataSource;
-
-    public InsertProvider(String tableName, DataSource dataSource) {
+    public InsertProvider(String tableName, ConnectionManager manager) {
         this.tableName = tableName;
-        this.dataSource = dataSource;
+        this.manager = manager;
     }
 
     @Override
@@ -50,7 +48,7 @@ public class InsertProvider implements InsertContext {
     @Override
     public InsertResult result(boolean returnKeys) {
         BuildResult buildResult = print();
-        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs(), returnKeys);
+        return DbUtil.executeUpdate(this.manager, buildResult.getSql(), buildResult.getArgs(), returnKeys);
     }
 
 

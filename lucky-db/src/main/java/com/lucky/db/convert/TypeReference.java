@@ -15,8 +15,6 @@
  */
 package com.lucky.db.convert;
 
-import org.apache.ibatis.type.TypeException;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -43,7 +41,7 @@ public abstract class TypeReference<T> {
 	//???? 怎么会是Class型
     if (genericSuperclass instanceof Class) {
       // try to climb up the hierarchy until meet something useful
-      if (org.apache.ibatis.type.TypeReference.class != genericSuperclass) {
+      if (TypeReference.class != genericSuperclass) {
         return getSuperclassTypeParameter(clazz.getSuperclass());
       }
 

@@ -1,103 +1,51 @@
 package com.lucky.db.executor;
 
-import com.lucky.db.executor.context.*;
-
-import javax.sql.DataSource;
-import javax.xml.crypto.Data;
-import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @Author:chaoqiang.zhou
  * @Description:
- * @Date:Create in 9:51 2017/6/27
+ * @Date:Create in 10:48 2017/7/7
  */
-public class DataBase implements Executor {
+public interface DataBase extends Executor {
+    /**
+     * 启动一个事务
+     *
+     * @return
+     */
+    Transaction begin();
 
+    /**
+     * 启动一个事务
+     *
+     * @param action 事务操作
+     * @return
+     */
+    void begin(Consumer<Transaction> action);
 
-    public DataBase(){
+    /**
+     * 启动一个事务
+     *
+     * @param func 事务操作
+     * @return 操作结果
+     */
+    <T> T begin(Function<Transaction, T> func);
 
-    }
-    public DataSource dataSource;
+    /**
+     * 启动一个事务
+     *
+     * @param func 事务操作
+     * @return 操作结果
+     */
+    <T> T begin(Function<Transaction, T> func, boolean setContext);
 
-    public DataBase(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    //插入语句信息
-    @Override
-    public InsertClause insert(Object obj) {
-        return new InsertClauseProvider(dataSource, obj);
-    }
-
-    @Override
-    public InsertContext insert(String table) {
-        return new InsertProvider(table, dataSource);
-    }
-
-    @Override
-    public InsertClause insert(List<Object> objs) {
-        return new InsertClauseProvider(dataSource, objs);
-    }
-
-
-    //删除语句信息
-    @Override
-    public DeleteContext delete(String table) {
-
-        return new DeleteProvider(table, dataSource);
-    }
-
-    @Override
-    public DeleteClauseProvider delete(Object obj) {
-        return new DeleteClauseProvider(this.dataSource, obj);
-    }
-
-
-
-    //更新语句操作
-    @Override
-    public UpdateContext update(String table) {
-        return new UpdateProvider(table, dataSource);
-    }
-
-    @Override
-    public UpdateClause update(Object obj) {
-
-        return new UpdateClauseProvider(dataSource, obj);
-    }
-
-    @Override
-    public UpdateClause update(Object obj, String... columns) {
-
-        return new UpdateClauseProvider(dataSource, obj, columns);
-    }
-
-
-    //查询语句操作,这块封装的不是太好，有点太死了
-    @Override
-    public SelectContext select(String column) {
-        return new SelectProvider(column, this.dataSource);
-    }
-
-    @Override
-    public SelectContext select(String... columns) {
-        return new SelectProvider(this.dataSource, columns);
-    }
-
-
-    //内部还可以调用SelectContext，就是为了字段名信息
-    @Override
-    public SelectClause select(Class<?> clazz) {
-        return new SelectClauseProvider(clazz, dataSource);
-    }
-
-
-    //事务操作的方法
-
-
-
-    @Override
-    public ExecuteClause execute(String sql, Object... args) {
-        return null;
-    }
+    /**
+     * 启动一个事务
+     *
+     * @param action     事务操作
+     * @param setContext 是否设置上下文事务
+     * @return
+     */
+    void begin(Consumer<Transaction> action, boolean setContext);
 }

@@ -7,7 +7,6 @@ import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.BuildResult;
 import com.lucky.db.sqlbuilder.DbBuilder;
 
-import javax.sql.DataSource;
 import java.util.Objects;
 
 /**
@@ -18,11 +17,11 @@ import java.util.Objects;
 public class DeleteClauseProvider implements DeleteClause {
 
 
-    private DataSource dataSource;
+    public ConnectionManager connectionManager;
     private Object obj;
 
-    public DeleteClauseProvider(DataSource dataSource, Object obj) {
-        this.dataSource = dataSource;
+    public DeleteClauseProvider(ConnectionManager connectionManager, Object obj) {
+        this.connectionManager = connectionManager;
         this.obj = obj;
     }
 
@@ -38,7 +37,7 @@ public class DeleteClauseProvider implements DeleteClause {
     @Override
     public BasicResult result() {
         BuildResult buildResult = print();
-        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
+        return DbUtil.executeUpdate(this.connectionManager, buildResult.getSql(), buildResult.getArgs());
     }
 
 

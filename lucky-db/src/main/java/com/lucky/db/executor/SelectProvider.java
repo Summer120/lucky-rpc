@@ -5,7 +5,6 @@ import com.lucky.db.executor.result.BuildResult;
 import com.lucky.db.executor.result.SelectResult;
 import com.lucky.db.sqlbuilder.SQL;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,20 +17,20 @@ import java.util.List;
 public class SelectProvider implements SelectContext {
 
 
-    public DataSource dataSource;
+    public ConnectionManager manager;
     private SQL sqlBuilder = new SQL();
     private List<String> columns = new ArrayList<>();
     private List<Object> args = new ArrayList<>();
 
 
-    public SelectProvider(String column, DataSource dataSource) {
+    public SelectProvider(String column, ConnectionManager manager) {
         this.columns.add(column);
-        this.dataSource = dataSource;
+        this.manager = manager;
     }
 
-    public SelectProvider(DataSource dataSource, String... columns) {
+    public SelectProvider(ConnectionManager manager, String... columns) {
         this.columns.addAll(Arrays.asList(columns));
-        this.dataSource = dataSource;
+        this.manager = manager;
     }
 
     @Override
@@ -94,7 +93,7 @@ public class SelectProvider implements SelectContext {
     @Override
     public SelectContext WHERE(String conditions, ConditionType type, Object value) {
 
-        this.sqlBuilder.WHERE(conditions + "" + type.name() + " ?");
+        this.sqlBuilder.WHERE(conditions + "" + type.value + " ?");
         this.args.add(value);
         return this;
     }
@@ -172,6 +171,6 @@ public class SelectProvider implements SelectContext {
         } else if (lockMode == LockMode.EXCLUSIVE) {
             buildResult.setSql(buildResult.getSql() + " for update");
         }
-        return DbUtil.executeQuery(dataSource, buildResult.getSql(), buildResult.getArgs());
+        return DbUtil.executeQuery(this.manager, buildResult.getSql(), buildResult.getArgs());
     }
 }

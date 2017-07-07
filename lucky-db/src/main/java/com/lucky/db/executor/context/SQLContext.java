@@ -1,5 +1,6 @@
 package com.lucky.db.executor.context;
 
+import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.BuildResult;
 
 import javax.sql.DataSource;
@@ -13,7 +14,7 @@ public interface SQLContext {
 
     BuildResult print();
 
-    <T> T result();
+
 
 
 }

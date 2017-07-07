@@ -14,7 +14,7 @@ public class ExecutorProvider implements ExecuteClause {
         return null;
     }
 
-    @Override
+
     public <T> T result() {
         return null;
     }

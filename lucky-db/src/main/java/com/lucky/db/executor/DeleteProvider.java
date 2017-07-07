@@ -6,7 +6,6 @@ import com.lucky.db.executor.result.BuildResult;
 import com.lucky.db.sqlbuilder.SQL;
 import lombok.Setter;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,18 +20,18 @@ public class DeleteProvider implements DeleteContext {
     private String tableName;
     private final SQL sqlBuilder = new SQL();
     private List<Object> args = new ArrayList<>();
-    private DataSource dataSource;
+    public ConnectionManager connectionManager;
 
-    public DeleteProvider(String tableName, DataSource dataSource) {
+    public DeleteProvider(String tableName, ConnectionManager connectionManager) {
         this.tableName = tableName;
-        this.dataSource = dataSource;
+        this.connectionManager = connectionManager;
     }
 
     @Override
     public DeleteContext where(String field, ConditionType type, Object value) {
         //a.id+""+"<="+"?"
         //最后进行参数化操作
-        this.sqlBuilder.WHERE(field + "" + type.name() + " ?");
+        this.sqlBuilder.WHERE(field + "" + type.value + " ?");
         args.add(value);
         return this;
     }
@@ -60,6 +59,6 @@ public class DeleteProvider implements DeleteContext {
     @Override
     public BasicResult result() {
         BuildResult buildResult = print();
-        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
+        return DbUtil.executeUpdate(this.connectionManager, buildResult.getSql(), buildResult.getArgs());
     }
 }

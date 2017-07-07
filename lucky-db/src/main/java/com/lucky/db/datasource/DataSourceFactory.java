@@ -1,5 +1,7 @@
 package com.lucky.db.datasource;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Objects;
@@ -16,9 +18,15 @@ public class DataSourceFactory {
 
 
     //模式的数据源模式
+    //todo:测试数据源配置信息
     public static DataSource get(String name) {
         Objects.requireNonNull(name);
-        return null;
+        BasicDataSource ds = new BasicDataSource();
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://192.168.55.121:3306/cmc_approval");
+        ds.setUsername("mxuser");
+        ds.setPassword("mxuser123456");
+        return ds;
     }
 
 

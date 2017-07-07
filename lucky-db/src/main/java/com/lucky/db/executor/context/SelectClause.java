@@ -3,6 +3,8 @@ package com.lucky.db.executor.context;
 import com.lucky.db.executor.ConditionType;
 import com.lucky.db.executor.LockMode;
 import com.lucky.db.executor.Sorter;
+import com.lucky.db.executor.result.InsertResult;
+import com.lucky.db.executor.result.SelectResult;
 
 /**
  * @Author:chaoqiang.zhou
@@ -38,5 +40,7 @@ public interface SelectClause extends SQLContext {
     public SelectClause LIMIT(String... columns);
 
     //锁模式操作
-    <T> T result(LockMode lockMode);
+    SelectResult result(LockMode lockMode);
+    SelectResult result();
+
 }

@@ -1,5 +1,7 @@
 package com.lucky.db.executor.context;
 
+import com.lucky.db.executor.result.InsertResult;
+
 /**
  * @Author:chaoqiang.zhou
  * @Description:insert语句的上下文的操作
@@ -12,5 +14,7 @@ public interface InsertContext extends SQLContext {
 
     InsertContext values(Object... values);
 
-    <T> T result(boolean returnKeys);
+    InsertResult result(boolean returnKeys);
+    InsertResult result();
+
 }

@@ -8,7 +8,6 @@ import com.lucky.db.executor.result.SelectResult;
 import com.lucky.db.sqlbuilder.DbBuilder;
 import com.lucky.db.sqlbuilder.SQL;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,17 +20,18 @@ public class SelectClauseProvider implements SelectClause {
 
 
     public Class<?> clazz;
-    public DataSource dataSource;
+    public ConnectionManager connectionManager;
     private SQL sqlBuilder = new SQL();
     private List<Object> args = new ArrayList<>();
 
-    public SelectClauseProvider(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public SelectClauseProvider(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
-    public SelectClauseProvider(Class<?> clazz, DataSource dataSource) {
+    public SelectClauseProvider(Class<?> clazz, ConnectionManager connectionManager) {
         this.clazz = clazz;
-        this.dataSource = dataSource;
+
+        this.connectionManager = connectionManager;
     }
 
     @Override
@@ -137,6 +137,6 @@ public class SelectClauseProvider implements SelectClause {
         } else if (lockMode == LockMode.EXCLUSIVE) {
             buildResult.setSql(buildResult.getSql() + " for update");
         }
-        return DbUtil.executeQuery(dataSource, buildResult.getSql(), buildResult.getArgs());
+        return DbUtil.executeQuery(this.connectionManager, buildResult.getSql(), buildResult.getArgs());
     }
 }

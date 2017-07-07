@@ -1,7 +1,6 @@
 package com.lucky.db.executor;
 
 import com.lucky.db.executor.context.*;
-import com.lucky.db.sqlbuilder.SQL;
 
 import java.util.List;
 
@@ -27,7 +26,6 @@ public interface Executor {
     DeleteClause delete(Object obj);
 
 
-
     UpdateContext update(String table);
 
     UpdateClause update(Object obj);
@@ -48,4 +46,6 @@ public interface Executor {
 
     //原生sql查询操作
     ExecuteClause execute(String sql, Object... args);
+
+
 }

@@ -1,6 +1,7 @@
 package com.lucky.db.executor;
 
 import com.lucky.db.datasource.DataSourceFactory;
+import com.lucky.db.executor.transaction.DataBaseImpl;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -13,13 +14,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DataBaseFactory {
 
-    public static final Map<String, Executor> executorCache = new ConcurrentHashMap<>();
+    public static final Map<String, DataBase> executorCache = new ConcurrentHashMap<>();
 
-    public Executor open(String dbName) {
-        Executor executor = executorCache.get(dbName);
+    /**
+     * 返回最底层的executor对象信息
+     *
+     * @param dbName
+     * @return
+     */
+    public static DataBase open(String dbName) {
+        DataBase executor = executorCache.get(dbName);
         if (executor == null) {
             DataSource dataSource = DataSourceFactory.get(dbName);
-            executor = new DataBase(dataSource);
+            executor = new DataBaseImpl(dataSource);
             executorCache.putIfAbsent(dbName, executor);
         }
         return executor;

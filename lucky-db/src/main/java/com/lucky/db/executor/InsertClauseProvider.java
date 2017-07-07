@@ -7,7 +7,6 @@ import com.lucky.db.executor.result.BuildResult;
 import com.lucky.db.executor.result.InsertResult;
 import com.lucky.db.sqlbuilder.DbBuilder;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,16 +19,15 @@ import java.util.Objects;
 public class InsertClauseProvider implements InsertClause {
 
     private List<Object> objects = new ArrayList<>();
-    public DataSource dataSource;
-
-    public InsertClauseProvider(DataSource dataSource, List<Object> objs) {
-        this.dataSource = dataSource;
+    public ConnectionManager manager;
+    public InsertClauseProvider(ConnectionManager manager, List<Object> objs) {
+        this.manager = manager;
         this.objects = objs;
     }
 
-    public InsertClauseProvider(DataSource dataSource, Object obj) {
-        this.dataSource = dataSource;
+    public InsertClauseProvider(ConnectionManager manager, Object obj) {
         this.objects.add(obj);
+        this.manager = manager;
     }
 
     @Override
@@ -45,7 +43,7 @@ public class InsertClauseProvider implements InsertClause {
     @Override
     public InsertResult result(Boolean returnKeys) {
         BuildResult buildResult = print();
-        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs(), returnKeys);
+        return DbUtil.executeUpdate(this.manager, buildResult.getSql(), buildResult.getArgs(), returnKeys);
     }
 
 

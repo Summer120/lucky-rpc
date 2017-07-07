@@ -5,7 +5,6 @@ import com.lucky.db.executor.result.BasicResult;
 import com.lucky.db.executor.result.BuildResult;
 import com.lucky.db.sqlbuilder.SQL;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,11 +23,11 @@ public class UpdateProvider implements UpdateContext {
     //参数集合信息
     private List<Object> args = new ArrayList<>();
 
-    private DataSource dataSource;
+    private ConnectionManager manager;
 
-    public UpdateProvider(String tableName, DataSource dataSource) {
+    public UpdateProvider(String tableName, ConnectionManager manager) {
         this.tableName = tableName;
-        this.dataSource = dataSource;
+        this.manager = manager;
     }
 
     public UpdateProvider(String tableName) {
@@ -40,7 +39,7 @@ public class UpdateProvider implements UpdateContext {
     public UpdateContext columns(String... columns) {
         for (String column : columns) {
             //另类的拼接sql操作
-            this.sqlBuilder.SET(column + " = ?");
+            this.sqlBuilder.SET(column + " = ? ");
         }
         return this;
     }
@@ -54,7 +53,7 @@ public class UpdateProvider implements UpdateContext {
     @Override
     public UpdateContext where(String field, ConditionType type, Object value) {
         //拼接sql
-        this.sqlBuilder.WHERE(field + "" + type.name() + " ?");
+        this.sqlBuilder.WHERE(field + " " + type.value + " ?");
         //拼接参数
         this.args.add(value);
         return this;
@@ -82,6 +81,6 @@ public class UpdateProvider implements UpdateContext {
     @Override
     public BasicResult result() {
         BuildResult buildResult = print();
-        return DbUtil.executeUpdate(dataSource, buildResult.getSql(), buildResult.getArgs());
+        return DbUtil.executeUpdate(this.manager, buildResult.getSql(), buildResult.getArgs());
     }
 }

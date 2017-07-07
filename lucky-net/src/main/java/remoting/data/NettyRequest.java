@@ -12,6 +12,7 @@ public class NettyRequest {
     private String token = "lucky.request";
     private String serviceName;
 
+    private String clientName;
     private String methodName;
 
     private Class<?>[] parameterTypes;
@@ -57,5 +58,13 @@ public class NettyRequest {
 
     public void setArguments(Object[] arguments) {
         this.arguments = arguments;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 }

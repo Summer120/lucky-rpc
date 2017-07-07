@@ -5,8 +5,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.pool.ChannelPool;
 import io.netty.util.concurrent.Future;
+import lucky.util.config.ActiveProfileConfig;
 import lucky.util.log.Logger;
 import lucky.util.log.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import remoting.client.ClientChannel;
 import remoting.client.ClientOptions;
 import remoting.data.NettyRequest;
@@ -22,6 +24,18 @@ public class RpcInvoker implements Invoker {
 
 
     private static Logger logger = LoggerFactory.getLogger(RpcInvoker.class);
+
+    public static String clientName;
+
+    static {
+        String serverName = ActiveProfileConfig.get("server.name");
+        if (StringUtils.isEmpty(serverName)) {
+            clientName = "";
+        }
+        //本地的servername就是client端，对外发送的请求
+        clientName = serverName;
+    }
+
     private ClientOptions options;
     private ChannelPool pool;
 
@@ -93,6 +107,7 @@ public class RpcInvoker implements Invoker {
         request.setArguments(args);
         request.setMethodName(method);
         request.setServiceName(service);
+        request.setClientName(clientName);
         return request;
     }
 }

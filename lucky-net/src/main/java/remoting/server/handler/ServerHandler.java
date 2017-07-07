@@ -1,15 +1,17 @@
 package remoting.server.handler;
 
-import remoting.data.NettyRequest;
-import remoting.data.NettyResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lucky.util.log.Logger;
 import lucky.util.log.LoggerFactory;
+import remoting.data.NettyRequest;
+import remoting.data.NettyResponse;
+import remoting.server.ChannelState;
 import remoting.server.LocalNettyExecutor;
 import remoting.server.NettyRequestProcessor;
 import remoting.server.RemotingServerImpl;
 
+import java.util.Date;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
@@ -33,6 +35,14 @@ public class ServerHandler extends SimpleChannelInboundHandler<NettyRequest> {
     //线程池中进行处理业务逻辑操作
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, NettyRequest nettyRequest) throws Exception {
+        // 更新状态信息，增加客户端调用信息统计
+        ChannelState state = channelHandlerContext.channel().attr(ChannelState.KEY).get();
+        if (state != null) {
+            state.setActiveTime(new Date());
+            state.setId(nettyRequest.getClientName());
+            state.setService(nettyRequest.getServiceName());
+            state.setMethod(nettyRequest.getMethodName());
+        }
         try {
             server.getExecutors().submit(new ServerTask(processor, nettyRequest, channelHandlerContext));
         } catch (RejectedExecutionException e) {
@@ -47,7 +57,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<NettyRequest> {
     //channel出现异常信息操作得时候自动触发
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("the error {},channel,{}",cause,ctx);
+        logger.error("the error {},channel,{}", cause, ctx);
         ctx.close();
         //后期可以考虑根据不同得异常进行响应得操作
     }

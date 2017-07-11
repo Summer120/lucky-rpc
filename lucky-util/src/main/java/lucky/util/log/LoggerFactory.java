@@ -28,7 +28,7 @@ public class LoggerFactory {
     static {
         //todo:该配置需要提前初始化
         String logger = System.getProperty("com.lucky.logger");
-        if(StringUtils.isEmpty(logger)){
+        if(StringUtils.isEmpty(logger)||logger.equals(LogType.LOG4J.displayName())){
             //默认是log4j的配置信息
             setLoggerAdapter(new Log4jLoggerAdapter());
         }else if(logger.equals(LogType.SLF4J.displayName()) || logger.equals(LogType.LOGBACK.displayName())){

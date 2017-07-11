@@ -17,15 +17,14 @@ package lucky.util.log.log4j;
 
 import lucky.util.log.Logger;
 import org.apache.log4j.Level;
-import org.apache.logging.log4j.spi.LoggerAdapter;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
-
 public class Log4jLogger implements Logger {
 
+
     //修改为默认的配置信息
-    private static final String FQCN = LoggerAdapter.class.getName();
+    private static final String FQCN = Log4jLoggerAdapter.class.getName();
 
     private final org.apache.log4j.Logger logger;
 
@@ -150,7 +149,7 @@ public class Log4jLogger implements Logger {
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-        FormattingTuple ft = MessageFormatter.format(format, arg1,arg2);
+        FormattingTuple ft = MessageFormatter.format(format, arg1, arg2);
         error(ft.getMessage());
     }
 
@@ -174,7 +173,7 @@ public class Log4jLogger implements Logger {
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-        FormattingTuple ft = MessageFormatter.format(format, arg1,arg2);
+        FormattingTuple ft = MessageFormatter.format(format, arg1, arg2);
         error(ft.getMessage());
     }
 

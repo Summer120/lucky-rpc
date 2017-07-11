@@ -1,8 +1,8 @@
 package rpc.options;
 
 import com.sun.jndi.toolkit.url.UrlUtil;
-import config.ActiveProfileConfig;
 import exception.ConfigException;
+import lucky.util.config.ActiveProfileConfig;
 import lucky.util.log.Logger;
 import lucky.util.log.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;

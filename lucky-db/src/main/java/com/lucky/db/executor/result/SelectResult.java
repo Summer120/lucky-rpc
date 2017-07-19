@@ -67,7 +67,6 @@ public class SelectResult implements AutoCloseable {
     public <T> List<T> all(Class<T> clazz) {
         try {
             List<T> list = new ArrayList<>();
-
             ResultSetMetaData metaData = resultset.getMetaData();
             EntityInfo info = Mapper.getEntityInfo(clazz);
             while (resultset.next()) {

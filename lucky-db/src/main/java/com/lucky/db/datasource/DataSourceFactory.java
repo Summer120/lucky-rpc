@@ -20,17 +20,14 @@ public class DataSourceFactory {
 
 
     //模式的数据源模式
-    //todo:测试数据源配置信息
     public synchronized static DataSource get(String name) {
         Objects.requireNonNull(name);
         DataSource db = dataSourceContainer.get(name);
         if (db != null) {
             return db;
         }
-
         DataSourceConfig dataSourceConfig = DataSourceConfigFactory.get(name);
         Objects.requireNonNull(dataSourceConfig);
-
         BasicDataSource ds = new BasicDataSource();
         DataSourceConfig.DataSourceParams dataSourceParams = dataSourceConfig.getDataSourceParams();
         ds.setDriverClassName(dataSourceConfig.getDriver());

@@ -22,7 +22,6 @@ public class HelloController {
         System.out.println("测试信息");
         modelAndView.addObject("test", "lala");
         modelAndView.addObject("haah", "haha");
-
         return modelAndView;
     }
 }

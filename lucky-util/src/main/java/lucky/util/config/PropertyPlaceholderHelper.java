@@ -142,7 +142,7 @@ public class PropertyPlaceholderHelper {
         return -1;
     }
 
-  
+
     public static interface PlaceholderResolver {
 
 
@@ -150,10 +150,9 @@ public class PropertyPlaceholderHelper {
     }
 
     public static void main(String[] args) {
-
-        Properties properties=new Properties();
-        properties.setProperty("aa","dd");
-        String value = PropertyPlaceholderHelper.defaultHolder.replacePlaceholders("${aa}",properties);
+        Properties properties = new Properties();
+        properties.setProperty("aa", "dd");
+        String value = PropertyPlaceholderHelper.defaultHolder.replacePlaceholders("${aa}", properties);
         System.out.println(value);
     }
 }

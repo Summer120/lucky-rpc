@@ -32,6 +32,8 @@ public class DataSourceConfigFactory {
     //项目启动的时候就加载
     static {
         //静态方法进行初始化操作
+
+
     }
 
     //通过名称来获取

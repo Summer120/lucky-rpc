@@ -1,4 +1,4 @@
-package com.lucky.db.config;
+﻿package com.lucky.db.config;
 
 /**
  * @Author:chaoqiang.zhou
@@ -44,7 +44,8 @@ public class DataSourceConfigFactory {
 
      //项目启动的时候就加载
     static {
-//        //静态方法进行初始化操作
+
+        //静态方法进行初始化操作
         //初始化dom工程建造类  -武刚鹏-2017年7月19日20:54:33
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     try{

@@ -9,6 +9,7 @@ package com.lucky.db.config;
 import com.lucky.db.exception.ConfigException;
 import lucky.util.config.ActiveProfileConfig;
 
+import lucky.util.config.PropertyPlaceholderHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -70,34 +71,35 @@ public class DataSourceConfigFactory {
                     Element el = (Element) childNodeList.item(j);
                     switch(el.getAttribute("name")) {
                         case "ConnString":
-                            dataSourceParams.setUrl(DataSourceConfigFactory.getProperty(el.getAttribute("value")));
+//                          //工具类解析占位符， ActiveProfileConfig类完成对properties文件的解析
+                            dataSourceParams.setUrl(PropertyPlaceholderHelper.
+                                    defaultHolder.replacePlaceholders(el.getAttribute("value"),ActiveProfileConfig.configs));
                             break;
                         case "MaxIdleConns":
-                            dataSourceParams.setMaxIdleConns(Integer.parseInt(DataSourceConfigFactory.getProperty(el.getAttribute("value"))));
+//                            dataSourceParams.setMaxIdleConns(Integer.parseInt(DataSourceConfigFactory.getProperty(el.getAttribute("value"))));
+                            dataSourceParams.setMaxIdleConns(Integer.parseInt(PropertyPlaceholderHelper.
+                                    defaultHolder.replacePlaceholders(el.getAttribute("value"),ActiveProfileConfig.configs)));
+
                             break;
                         case "MaxOpenConns":
-                            dataSourceParams.setMaxOpenConns(Integer.parseInt(DataSourceConfigFactory.getProperty(el.getAttribute("value"))));
+                            dataSourceParams.setMaxOpenConns(Integer.parseInt(PropertyPlaceholderHelper.
+                                    defaultHolder.replacePlaceholders(el.getAttribute("value"),ActiveProfileConfig.configs)));
                             break;
                         case "Username":
-                            dataSourceParams.setUserName(DataSourceConfigFactory.getProperty(el.getAttribute("value")));
+                            dataSourceParams.setUserName(PropertyPlaceholderHelper.
+                                    defaultHolder.replacePlaceholders(el.getAttribute("value"),ActiveProfileConfig.configs));
                             break;
                         case "Password":
-                            dataSourceParams.setPassword(DataSourceConfigFactory.getProperty(el.getAttribute("value")));
+                            dataSourceParams.setPassword(PropertyPlaceholderHelper.
+                                    defaultHolder.replacePlaceholders(el.getAttribute("value"),ActiveProfileConfig.configs));
                             break;
                     }
                 }
                 dataSourceConfig.setDataSourceParams(dataSourceParams);
                 //存入公共的  hashmapl里
                 dataSourceConfigs.put(dataSourceConfig.getName(),dataSourceConfig);
-//            String name = dataSourceConfig.getName();
-//            System.out.println("=name="+ dataSourceConfigs.get(name).getName());
-//            System.out.println("=driver="+ dataSourceConfigs.get(name).getDriver());
-//            System.out.println("=ConnString="+ dataSourceConfigs.get(name).getDataSourceParams().getUrl());
-//            System.out.println("=MaxIdleConns="+ dataSourceConfigs.get(name).getDataSourceParams().getMaxIdleConns());
-//            System.out.println("=MaxOpenConns="+ dataSourceConfigs.get(name).getDataSourceParams().getMaxOpenConns());
-//            System.out.println("=Username="+ dataSourceConfigs.get(name).getDataSourceParams().getUserName());
-//            System.out.println("=Password="+ dataSourceConfigs.get(name).getDataSourceParams().getPassword());
-//            System.out.println("=====结束遍历database===== "+ i + dataSourceConfigs.get(dataSourceConfig.getName()));
+
+
 
             }
         }catch(Exception e){
@@ -106,35 +108,6 @@ public class DataSourceConfigFactory {
     }
 
 
-
-    /**
-     * @Author: ledary 武刚鹏
-     * @param property
-     * @return  String
-     * @Description: 解析${}方法，${}占位符不合法时，原样返回
-     * @Date: 2017年7月19日20:56:53
-     */
-    private static String getProperty(String property){
-        char [] stringArr = property.toCharArray();
-        StringBuilder stringBuilder = new StringBuilder();
-        StringBuilder  key  = new StringBuilder();
-        int beginIndex =0;
-        int endIndex = 0;
-        for( int i=0;i<stringArr.length;i++){
-            if( '$' == stringArr[i] && '{' == stringArr[i+1]) {
-                beginIndex = i+2;
-                i++;
-            }else if(stringArr[i] == '}'){
-                endIndex = i;
-                stringBuilder.append(ActiveProfileConfig.get(property.substring(beginIndex,endIndex)));
-                beginIndex = 0;
-                endIndex = 0;
-            }else if( beginIndex == 0){
-                stringBuilder.append(stringArr[i]);
-            }
-        }
-        return stringBuilder.toString();
-    }
     //通过名称来获取
     public static DataSourceConfig get(String name) {
         DataSourceConfig dataSourceConfig = dataSourceConfigs.get(name);
@@ -148,6 +121,19 @@ public class DataSourceConfigFactory {
     //测试方法 void main
     public static void main(String[] args) {
         DataSourceConfigFactory dscf = new DataSourceConfigFactory();
+        DataSourceConfigFactory.dataSourceConfigs.size();
+        for(Object key : DataSourceConfigFactory.dataSourceConfigs.keySet()) {   //只能遍历key
+            System.out.print("Key = " + key + "\n");
+            String name = key.toString();
+            DataSourceConfig dsc = dataSourceConfigs.get(name);
+            System.out.println("=driver=" + dsc.getDriver());
+            System.out.println("=ConnString=" + dsc.getDataSourceParams().getUrl());
+            System.out.println("=MaxIdleConns=" + dsc.getDataSourceParams().getMaxIdleConns());
+            System.out.println("=MaxOpenConns=" + dsc.getDataSourceParams().getMaxOpenConns());
+            System.out.println("=Username=" + dsc.getDataSourceParams().getUserName());
+            System.out.println("=Password=" + dataSourceConfigs.get(name).getDataSourceParams().getPassword());
+            System.out.println("=====结束遍历database===== " + dsc);
+        }
 
 
     }
